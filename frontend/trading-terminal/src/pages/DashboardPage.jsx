@@ -49,8 +49,11 @@ export default function DashboardPage() {
         setPnlRows(rows.length ? rows : fallbackPnlRows);
       } else setPnlRows(fallbackPnlRows);
 
+      const isLive = (market.status === 'fulfilled' && normalizeRows(market.value).length >= symbols.length)
+        || (analytics.status === 'fulfilled' && normalizeRows(analytics.value?.symbols || analytics.value).length >= symbols.length);
+
       const rejected = [market, analytics, pnl].find((result) => result.status === 'rejected');
-      setError(rejected ? `${errorMessage(rejected.reason, 'Some dashboard APIs are unavailable')} - showing simulated market tape` : '');
+      setError(rejected || !isLive ? `${errorMessage(rejected?.reason, 'Some dashboard APIs are unavailable')} - showing simulated market tape` : '');
     } finally {
       setLoading(false);
     }
@@ -58,20 +61,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDashboard();
-    const id = setInterval(fetchDashboard, 3000);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setTick((current) => {
-        const next = current + 1;
-        setMarketRows(mockMarketRows(next));
-        setAnalyticsRows(mockAnalyticsRows(next));
-        setPnlRows(mockPnlRows(next));
-        return next;
-      });
-    }, 1000);
+    const id = setInterval(fetchDashboard, 2000);
     return () => clearInterval(id);
   }, []);
 

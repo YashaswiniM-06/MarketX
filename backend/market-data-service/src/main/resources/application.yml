@@ -14,6 +14,11 @@ marketx:
       AAPL: 150.00
       MSFT: 420.00
       GOOG: 180.00
+      NVDA: 140.00
+      TSLA: 180.00
+      JPM: 260.00
+      SPY: 600.00
+      QQQ: 520.00
     publish-rate-ms: 1000
     enabled: true
 

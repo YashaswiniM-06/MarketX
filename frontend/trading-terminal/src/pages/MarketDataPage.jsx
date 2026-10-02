@@ -39,11 +39,7 @@ export default function MarketDataPage() {
   useEffect(() => {
     fetchMarketData();
     const id = setInterval(fetchMarketData, 1000);
-    const tickId = setInterval(() => setRows(mockMarketRows()), 1000);
-    return () => {
-      clearInterval(id);
-      clearInterval(tickId);
-    };
+    return () => clearInterval(id);
   }, []);
 
   const columns = [

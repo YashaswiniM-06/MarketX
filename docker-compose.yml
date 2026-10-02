@@ -166,6 +166,10 @@ services:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
+      position-service:
+        condition: service_healthy
+      pnl-service:
+        condition: service_healthy
     healthcheck:
       <<: *spring-healthcheck
       test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]

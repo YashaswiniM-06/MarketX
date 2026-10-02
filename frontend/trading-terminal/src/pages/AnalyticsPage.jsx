@@ -27,12 +27,8 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     fetchAnalytics();
-    const id = setInterval(fetchAnalytics, 3000);
-    const tickId = setInterval(() => setRows(mockAnalyticsRows()), 1000);
-    return () => {
-      clearInterval(id);
-      clearInterval(tickId);
-    };
+    const id = setInterval(fetchAnalytics, 2000);
+    return () => clearInterval(id);
   }, []);
 
   const priceRows = rows.filter((row) => row.latestPrice !== null && row.latestPrice !== undefined);

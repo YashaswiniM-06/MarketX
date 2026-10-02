@@ -52,12 +52,30 @@ export default function OrderEntryPage({ selectedSymbol }) {
         price: form.type === 'MARKET' ? undefined : Number(form.price)
       };
       const response = await omsApi.submitOrder(payload);
-      const responseLooksMock = /mock/i.test(response.message || '');
+      if (response?.status === 'REJECTED') {
+        setResult({
+          type: 'error',
+          data: response,
+          message: response.message || (response.rejectionReasons?.length ? response.rejectionReasons.join('; ') : 'Order rejected by risk engine')
+        });
+        return;
+      }
+      const responseLooksMock = /mock/i.test(response?.message || '');
       const enriched = responseLooksMock
-        ? { ...mockOrderResponse(form, response.message), orderId: response.orderId, status: response.status || 'ACCEPTED' }
-        : { ...mockOrderResponse(form, response.message), ...response };
+        ? { ...mockOrderResponse(form, response?.message), orderId: response?.orderId, status: response?.status || 'ACCEPTED' }
+        : { ...mockOrderResponse(form, response?.message), ...response };
       setResult({ type: enriched.status === 'REJECTED' ? 'error' : 'success', data: enriched });
     } catch (error) {
+      if (error?.response?.data) {
+        const errData = error.response.data;
+        const isRejected = errData.status === 'REJECTED' || errData.rejectionReasons?.length;
+        setResult({
+          type: isRejected ? 'error' : 'error',
+          data: errData,
+          message: errData.message || (errData.rejectionReasons?.length ? errData.rejectionReasons.join('; ') : errorMessage(error, 'Order failed'))
+        });
+        return;
+      }
       const simulated = mockOrderResponse(form);
       setResult({
         type: simulated.status === 'REJECTED' ? 'error' : 'success',

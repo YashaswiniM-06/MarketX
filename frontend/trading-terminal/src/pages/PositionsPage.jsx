@@ -29,7 +29,7 @@ export default function PositionsPage() {
 
   useEffect(() => {
     fetchPositions();
-    const id = setInterval(() => setRows(mockPositionRows()), 1000);
+    const id = setInterval(fetchPositions, 2000);
     return () => clearInterval(id);
   }, [accountId]);
 

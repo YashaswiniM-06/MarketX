@@ -30,11 +30,7 @@ export default function PnlPage() {
   useEffect(() => {
     fetchPnl();
     const id = setInterval(fetchPnl, 2000);
-    const markId = setInterval(() => setRows(mockPnlRows()), 1000);
-    return () => {
-      clearInterval(id);
-      clearInterval(markId);
-    };
+    return () => clearInterval(id);
   }, [accountId]);
 
   const totals = useMemo(() => ({
